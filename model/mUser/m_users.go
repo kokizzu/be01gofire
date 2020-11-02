@@ -19,10 +19,7 @@ func (u *User) Insert(c *firestore.Client) error {
 	users := c.Collection(Collection)
 	user := users.Doc(hashOf(u.Email))
 	snap, err := user.Get(context.Background())
-	if err != nil {
-		return err
-	}
-	if snap.Exists() {
+	if err == nil  && snap.Exists() {
 		return errors.New(`user already exists`)
 	}
 	_, err = user.Set(context.Background(), u)

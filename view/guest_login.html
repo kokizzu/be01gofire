@@ -3,7 +3,7 @@
 	<title>Register</title>
 </head>
 <body>
-<form method="post" onsubmit="do_login()">
+<form method="post" onsubmit="return do_login()">
 	<label for="email">Email</label>
 	<input name='email' id="email" type="email"/>
 	<label for="pass">Password</label>
@@ -22,9 +22,11 @@
 			method: 'post',
 			body: JSON.stringify(data),
 		} ).then( ( res ) => {
-			let json = res.json()
-			document.getElementById( 'result' ).innerText = json;
+			res.json().then((json) => {
+				document.getElementById( 'result' ).innerText = JSON.stringify(json);
+			})
 		} )
+		return false
 	}
 </script>
 </body>
