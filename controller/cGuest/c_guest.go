@@ -61,3 +61,34 @@ func Register(ctx *controller.Ctx) {
 	}
 	ctx.JSON(http.StatusOK, res)
 }
+
+func AddQueue(ctx *controller.Ctx) {
+	if ctx.Context.Request.Method == `GET` {
+		ctx.HTML(http.StatusOK, `guest_add-queue.html`, gin.H{
+			`foo`: `bar`,
+		})
+		return
+	}
+	// TODO: insert queue entry, input: priority, name
+}
+func UpdateQueue(ctx *controller.Ctx) {
+	if ctx.Context.Request.Method == `GET` {
+		ctx.HTML(http.StatusOK, `guest_update-queue.html`, gin.H{})
+		return
+	}
+	// TODO: update queue entry, input: id, priority, name
+}
+func RemoveQueue(ctx *controller.Ctx) {
+	if ctx.Context.Request.Method == `GET` {
+		ctx.HTML(http.StatusOK, `guest_remove-queue.html`, gin.H{})
+		return
+	}
+	// TODO: remove top priority entry, input: limit=1
+}
+func ShowQueue(ctx *controller.Ctx) {
+	if ctx.Context.Request.Method == `GET` {
+		ctx.HTML(http.StatusOK, `guest_show-queue.html`, gin.H{})
+		return
+	}
+	// TODO: show queue entries (order by priority), input: limit=5
+}
