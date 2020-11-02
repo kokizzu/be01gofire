@@ -25,8 +25,10 @@ func Login(ctx *controller.Ctx) {
 				res[`email`] = user.Email
 				// TODO: set cookie/jwt
 			} else {
-				res[`error`] = `wrong username or password`
+				res[`error`] = `wrong username or password` // wrong password
 			}
+		} else {
+			res[`error`] = `wrong username or password` // not exists
 		}
 	}
 	if err != nil {
