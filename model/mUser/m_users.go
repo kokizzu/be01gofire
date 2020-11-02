@@ -23,13 +23,10 @@ func (u *User) Insert(c *firestore.Client) error {
 		return errors.New(`user already exists`)
 	}
 	_, err = user.Set(context.Background(), u)
-	if err != nil {
-		return err
-	}
-	return nil
+	return err
 }
 
-func (u *User) Find(c *firestore.Client) error {
+func (u *User) FindByEmail(c *firestore.Client) error {
 	users := c.Collection(Collection)
 	user := users.Doc(hashOf(u.Email))
 	snap, err := user.Get(context.Background())

@@ -5,6 +5,7 @@ import (
 	"be01gofire/model/mUser"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"time"
 )
 
 func Login(ctx *controller.Ctx) {
@@ -19,7 +20,7 @@ func Login(ctx *controller.Ctx) {
 	pass := user.Pass
 	res := map[string]interface{}{}
 	if err == nil {
-		err := user.Find(ctx.Firestore)
+		err := user.FindByEmail(ctx.Firestore)
 		if err == nil {
 			if user.CheckPass(pass) {
 				res[`email`] = user.Email
@@ -39,7 +40,9 @@ func Login(ctx *controller.Ctx) {
 
 func Register(ctx *controller.Ctx) {
 	if ctx.Context.Request.Method == `GET` {
-		ctx.HTML(http.StatusOK, `guest_register.html`, gin.H{})
+		ctx.HTML(http.StatusOK, `guest_register.html`, gin.H{
+			`title`:`Register ` + time.Now().Format(time.RFC1123Z), 
+		})
 		return
 	}
 	// https://github.com/gin-gonic/gin#bind-form-data-request-with-custom-struct 
