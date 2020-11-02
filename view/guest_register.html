@@ -3,7 +3,7 @@
 	<title>Register</title>
 </head>
 <body>
-<form method="post" onsubmit="do_login()">
+<form method="post" onsubmit="do_register()">
 	<label for="email">Email</label>
 	<input name='email' id="email" type="email"/>
 	<label for="pass">Password</label>
@@ -12,7 +12,7 @@
 </form>
 <div id="result"></div>
 <script>
-	function do_login() {
+	function do_register() {
 		const ids = ['pass', 'email'];
 		let data = {};
 		for( let id of ids ) {
