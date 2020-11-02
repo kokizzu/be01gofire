@@ -2,6 +2,7 @@ package cGuest
 
 import (
 	"be01gofire/controller"
+	"be01gofire/model/mQueue"
 	"be01gofire/model/mUser"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -64,19 +65,43 @@ func Register(ctx *controller.Ctx) {
 
 func AddQueue(ctx *controller.Ctx) {
 	if ctx.Context.Request.Method == `GET` {
-		ctx.HTML(http.StatusOK, `guest_add-queue.html`, gin.H{
-			`foo`: `bar`,
-		})
+		ctx.HTML(http.StatusOK, `guest_add-queue.html`, gin.H{})
 		return
 	}
-	// TODO: insert queue entry, input: priority, name
+	qe := mQueue.QueueEntry{}
+	err := ctx.ShouldBindJSON(&qe)
+	res := map[string]interface{}{}
+	if err == nil {
+		err = qe.Insert(ctx.Firestore)
+		if err == nil {
+			res[`entry`] = qe
+		}
+	}
+	if err != nil {
+		res[`error`] = err.Error()
+	}
+	ctx.JSON(http.StatusOK, res)	
 }
 func UpdateQueue(ctx *controller.Ctx) {
 	if ctx.Context.Request.Method == `GET` {
 		ctx.HTML(http.StatusOK, `guest_update-queue.html`, gin.H{})
 		return
 	}
-	// TODO: update queue entry, input: id, priority, name
+	qe := mQueue.QueueEntry{}
+	err := ctx.ShouldBindJSON(&qe)
+	res := map[string]interface{}{}
+	if err == nil {
+		err = qe.Update(ctx.Firestore)
+		if err == nil {
+			res[`entry`] = qe
+		} else {
+			res[`error`] = `entry not found`
+		}
+	}
+	if err != nil {
+		res[`error`] = err.Error()
+	}
+	ctx.JSON(http.StatusOK, res)
 }
 func RemoveQueue(ctx *controller.Ctx) {
 	if ctx.Context.Request.Method == `GET` {

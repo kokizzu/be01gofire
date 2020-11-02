@@ -1,0 +1,34 @@
+<html>
+<head>
+	<title>Add Queue Entry</title>
+</head>
+<body>
+<form method="post" onsubmit="return do_add_queue()">
+	<label for="name">Name</label>
+	<input name="name" id="name"/>
+	<label for="priority">Priority</label>
+	<input name="priority" id="priority" type="number"/>
+	<button>Enqueue</button>
+</form>
+<div id="result"></div>
+<script>
+	function do_add_queue() {
+		const ids = ['priority', 'name'];
+		let data = {};
+		for( let id of ids ) {
+			data[ id ] = document.getElementById( id ).value;
+		}
+		data.priority = +data.priority || 1000;
+		fetch('', {
+			method: 'post',
+			body: JSON.stringify(data),
+		} ).then( ( res ) => {
+			res.json().then((json) => {
+				document.getElementById( 'result' ).innerText = JSON.stringify(json);
+			})
+		} )
+		return false
+	}
+</script>
+</body>
+</html>
