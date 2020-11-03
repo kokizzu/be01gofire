@@ -108,12 +108,41 @@ func RemoveQueue(ctx *controller.Ctx) {
 		ctx.HTML(http.StatusOK, `guest_remove-queue.html`, gin.H{})
 		return
 	}
-	// TODO: remove top priority entry, input: limit=1
+	qe := mQueue.QueueEntry{}
+	err := ctx.ShouldBindJSON(&qe)
+	res := map[string]interface{}{}
+	if err == nil {
+		err = qe.Delete(ctx.Firestore)
+		if err == nil {
+			res[`entry`] = qe
+		} else {
+			res[`error`] = `entry not found`
+		}
+	}
+	if err != nil {
+		res[`error`] = err.Error()
+	}
+	ctx.JSON(http.StatusOK, res)
+	
 }
+
+type ShowQueueInput struct {
+	First int
+}
+
 func ShowQueue(ctx *controller.Ctx) {
 	if ctx.Context.Request.Method == `GET` {
 		ctx.HTML(http.StatusOK, `guest_show-queue.html`, gin.H{})
 		return
 	}
-	// TODO: show queue entries (order by priority), input: limit=5
+	qe := mQueue.QueueEntry{}
+	sqi := ShowQueueInput{}
+	err := ctx.ShouldBindJSON(&sqi)
+	res := map[string]interface{}{}
+	rows, err := qe.List(ctx.Firestore,sqi.First)
+	if err != nil {
+		res[`error`] = err.Error()
+	}
+	res[`list`] = rows
+	ctx.JSON(http.StatusOK, res)
 }

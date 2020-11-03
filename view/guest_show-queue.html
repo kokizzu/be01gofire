@@ -1,0 +1,32 @@
+<html>
+<head>
+	<title>Add Queue Entry</title>
+</head>
+<body>
+<form method="post" onsubmit="return do_show_queue()">
+	<label for="first">N:</label>
+	<input type="number" id="first" name="first" value="10" />
+	<button>Show</button>
+</form>
+<div id="result"></div>
+<script>
+	function do_show_queue() {
+		const ids = ['first'];
+		let data = {};
+		for( let id of ids ) {
+			data[ id ] = document.getElementById( id ).value;
+		}
+		data.first = +data.first || 10;
+		fetch('', {
+			method: 'post',
+			body: JSON.stringify(data),
+		} ).then( ( res ) => {
+			res.json().then((json) => {
+				document.getElementById( 'result' ).innerText = JSON.stringify(json);
+			})
+		} )
+		return false
+	}
+</script>
+</body>
+</html>

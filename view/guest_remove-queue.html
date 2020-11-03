@@ -1,0 +1,31 @@
+<html>
+<head>
+	<title>Add Queue Entry</title>
+</head>
+<body>
+<form method="post" onsubmit="return do_remove_queue()">
+	<label for="id">ID</label>
+	<input name="id" id="id"/>
+	<button>Dequeue</button>
+</form>
+<div id="result"></div>
+<script>
+	function do_remove_queue() {
+		const ids = ['id'];
+		let data = {};
+		for( let id of ids ) {
+			data[ id ] = document.getElementById( id ).value;
+		}
+		fetch('', {
+			method: 'post',
+			body: JSON.stringify(data),
+		} ).then( ( res ) => {
+			res.json().then((json) => {
+				document.getElementById( 'result' ).innerText = JSON.stringify(json);
+			})
+		} )
+		return false
+	}
+</script>
+</body>
+</html>

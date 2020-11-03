@@ -35,16 +35,40 @@ func (q *QueueEntry) Update(c *firestore.Client) error {
 	return err
 }
 
-func (q *QueueEntry) Delete(c *firestore.Client, limit int) ([]QueueEntry,error) {
-	res, err := q.List(c, limit)
+func (q *QueueEntry) Delete(c *firestore.Client) error {
+	entries := c.Collection(Collection)
+	qe := entries.Doc(q.Id)
+	_, err := qe.Get(context.Background())
 	if err != nil {
-		return nil, err
+		return err // does not exists or other error
 	}
-	// TODO: remove each returned items
-	return res, err
+	_, err = qe.Delete(context.Background())
+	return err
 }
 
 func (q *QueueEntry) List(c *firestore.Client, limit int) ([]QueueEntry, error) {
-	// TODO: get top
-	return nil, nil
+	if limit <= 0 {
+		limit = 10
+	}
+	entries := c.Collection(Collection)
+	que := entries.
+		Where(`Priority`,`>`,0).
+		OrderBy(`Priority`,firestore.Asc).
+		Limit(limit)
+	rows := que.Documents(context.Background())
+	defer rows.Stop()
+	all, err := rows.GetAll()
+	if err != nil {
+		return nil, err
+	}
+	res := []QueueEntry{}
+	for _, v := range all {
+		row := QueueEntry{}
+		err = v.DataTo(&row)
+		if err != nil {
+			return res, err
+		}
+		res = append(res, row)
+	}
+	return res, nil
 }
