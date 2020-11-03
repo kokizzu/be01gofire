@@ -1,11 +1,10 @@
 package controller
 
 import (
+	"be01gofire/model/mAccounts"
 	"cloud.google.com/go/firestore"
-	"context"
 	firebase "firebase.google.com/go"
 	"github.com/gin-gonic/gin"
-	"google.golang.org/api/option"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"log"
@@ -26,26 +25,27 @@ type Server struct {
 
 func InitServer() *Server {
 	// connect ke firebase
-	ctx := context.Background()
-	opt := option.WithCredentialsFile(FirebaseConfig)
-	cfg := &firebase.Config{ProjectID: FirebaseProject}
-	app, err := firebase.NewApp(ctx,cfg,opt)
-	if err != nil {
-		log.Fatalf(`failed to connect to firebase: `+err.Error())
-	}
-	fire, err := app.Firestore(ctx)
-	if err != nil {
-		log.Fatalf(`failed to connect to firestore: `+err.Error())
-	}
+	//ctx := context.Background()
+	//opt := option.WithCredentialsFile(FirebaseConfig)
+	//cfg := &firebase.Config{ProjectID: FirebaseProject}
+	//app, err := firebase.NewApp(ctx,cfg,opt)
+	//if err != nil {
+	//	log.Fatalf(`failed to connect to firebase: `+err.Error())
+	//}
+	//fire, err := app.Firestore(ctx)
+	//if err != nil {
+	//	log.Fatalf(`failed to connect to firestore: `+err.Error())
+	//}
 	// connect ke mysql
 	db, err := gorm.Open(mysql.Open(MysqlDsn), &gorm.Config{})
 	if err != nil {
 		log.Fatalf(`failed to connect to mysql: `+err.Error())
 	}
+	db.AutoMigrate(&mAccounts.Account{})
 	// set struct
 	s := &Server{}
-	s.App = app
-	s.Firestore = fire
+	//s.App = app
+	//s.Firestore = fire
 	s.Router = gin.Default()
 	s.Db = db
 	// https://chenyitian.gitbooks.io/gin-web-framework/content/docs/26.html

@@ -2,6 +2,7 @@ package cGuest
 
 import (
 	"be01gofire/controller"
+	"be01gofire/model/mAccounts"
 	"be01gofire/model/mQueue"
 	"be01gofire/model/mUser"
 	"github.com/gin-gonic/gin"
@@ -144,5 +145,29 @@ func ShowQueue(ctx *controller.Ctx) {
 		res[`error`] = err.Error()
 	}
 	res[`list`] = rows
+	ctx.JSON(http.StatusOK, res)
+}
+
+func CreateAccount(ctx *controller.Ctx) {
+	if ctx.Context.Request.Method == `GET` {
+		ctx.HTML(http.StatusOK, `guest_create-account.html`, gin.H{})
+		return
+	}
+	a := mAccounts.Account{}
+	err := ctx.ShouldBindJSON(&a)
+	res := map[string]interface{}{}
+	if err == nil {
+		err = a.IsValid()
+	}
+	if err == nil {
+		tx := ctx.Db.Create(&a)
+		err = tx.Error
+		if err != nil {
+			res[`account`] = a
+		} 
+	}
+	if err != nil {
+		res[`error`] = err.Error()
+	}
 	ctx.JSON(http.StatusOK, res)
 }

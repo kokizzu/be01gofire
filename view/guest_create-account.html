@@ -1,0 +1,35 @@
+<html>
+<head>
+	<title>Create Account</title>
+</head>
+<body>
+<form method="post" onsubmit="return do_create_account()">
+	<label for="number">Number</label>
+	<input name='number' id="number"/>
+	<label for="address">Address</label>
+	<input name="address" id="address"/>
+	<label for="phone">Phone</label>
+	<input name="phone" id="phone"/>
+	<button>Create Account</button>
+</form>
+<div id="result"></div>
+<script>
+	function do_create_account() {
+		const ids = ['number', 'address','phone'];
+		let data = {};
+		for( let id of ids ) {
+			data[ id ] = document.getElementById( id ).value;
+		}
+		fetch('', {
+			method: 'post',
+			body: JSON.stringify(data),
+		} ).then( ( res ) => {
+			res.json().then((json) => {
+				document.getElementById( 'result' ).innerText = JSON.stringify(json);
+			})
+		} )
+		return false
+	}
+</script>
+</body>
+</html>
