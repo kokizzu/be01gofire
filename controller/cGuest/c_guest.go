@@ -148,6 +148,10 @@ func ShowQueue(ctx *controller.Ctx) {
 	ctx.JSON(http.StatusOK, res)
 }
 
+//  curl -X POST localhost:8084/guest/create-account -H 'content-type:application/json' -d '{"number":"124-125-1265","address":"gayungsari 3"}'
+// {"error":"phone may not be empty"}
+// curl -X POST localhost:8084/guest/create-account -H 'content-type:application/json' -d '{"number":"124-125-1265","address":"gayungsari 3","phone":"9812958125"}'
+// {"account":{"ID":1,"CreatedAt":"2020-11-03T09:00:07.48785323+07:00","UpdatedAt":"2020-11-03T09:00:07.48785323+07:00","DeletedAt":"0001-01-01T00:00:00Z","Number":"124-125-1265","Address":"gayungsari 3","Phone":"9812958125"}}
 func CreateAccount(ctx *controller.Ctx) {
 	if ctx.Context.Request.Method == `GET` {
 		ctx.HTML(http.StatusOK, `guest_create-account.html`, gin.H{})
@@ -160,7 +164,7 @@ func CreateAccount(ctx *controller.Ctx) {
 		err = a.IsValid()
 	}
 	if err == nil {
-		tx := ctx.Db.Create(&a)
+		tx := ctx.Db.Create(&a) // INSERT INTO ... VALUES ...
 		err = tx.Error
 		if err == nil {
 			res[`account`] = a

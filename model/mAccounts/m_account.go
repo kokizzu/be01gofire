@@ -13,7 +13,7 @@ import (
 // 5. buat view/curl, lalu testing
 
 type Account struct {
-	gorm.Model
+	gorm.Model // id, created_at, updated_at, deleted_at
 	Number string
 	Address string
 	Phone string
