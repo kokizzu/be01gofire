@@ -162,7 +162,7 @@ func CreateAccount(ctx *controller.Ctx) {
 	if err == nil {
 		tx := ctx.Db.Create(&a)
 		err = tx.Error
-		if err != nil {
+		if err == nil {
 			res[`account`] = a
 		} 
 	}
