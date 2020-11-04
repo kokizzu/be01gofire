@@ -42,7 +42,7 @@ type Auth struct {
 }
 
 func (auth *Auth) Login(db *gorm.DB) (error, string) {
-	var account Account
+	account := Account{}
 	if err := db.Where(&Account{Email: auth.Email}).First(&account).Error; err != nil {
 		if err == gorm.ErrRecordNotFound {
 			return errors.New("account not found"), ""
@@ -127,7 +127,7 @@ func (transaction *Transaction) Withdraw(db *gorm.DB) error {
 func (transaction *Transaction) Deposit(db *gorm.DB) error {
 	err := db.Transaction(func(tx *gorm.DB) error {
 		var sender Account
-		if err := tx.Model(&Account{}).Where(&Account{AccountNumber: transaction.Sender}).First(&sender).Update("saldo", sender.Saldo-transaction.Amount).Error; err != nil {
+		if err := tx.Model(&Account{}).Where(&Account{AccountNumber: transaction.Sender}).First(&sender).Update("saldo", sender.Saldo+transaction.Amount).Error; err != nil {
 			return err
 		}
 		transaction.TransactionType = DEPOSIT

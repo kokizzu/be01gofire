@@ -30,7 +30,6 @@ func CheckAuth(c *gin.Context) int {
 			c.JSON(http.StatusUnauthorized, result)
 			c.Abort()
 		}
-
 		return idAccount
 	} 
 	result := gin.H{
