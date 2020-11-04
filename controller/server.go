@@ -1,10 +1,11 @@
 package controller
 
 import (
-	"be01gofire/model/mAccounts"
+	"be01gofire/model/mBank"
 	"cloud.google.com/go/firestore"
 	firebase "firebase.google.com/go"
 	"github.com/gin-gonic/gin"
+	"github.com/gin-contrib/cors"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"log"
@@ -41,12 +42,14 @@ func InitServer() *Server {
 	if err != nil {
 		log.Fatalf(`failed to connect to mysql: `+err.Error())
 	}
-	db.AutoMigrate(&mAccounts.Account{})
+	db.AutoMigrate(&mBank.Account{},&mBank.Auth{},&mBank.Transaction{})
 	// set struct
 	s := &Server{}
 	//s.App = app
 	//s.Firestore = fire
 	s.Router = gin.Default()
+	// add CORS
+	s.Router.Use(cors.Default())
 	s.Db = db
 	// https://chenyitian.gitbooks.io/gin-web-framework/content/docs/26.html
 	s.Router.LoadHTMLGlob("view/*")
