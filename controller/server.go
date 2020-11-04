@@ -49,7 +49,12 @@ func InitServer() *Server {
 	//s.Firestore = fire
 	s.Router = gin.Default()
 	// add CORS
-	s.Router.Use(cors.Default())
+	cfg := cors.DefaultConfig()
+	cfg.AllowAllOrigins = true
+	cfg.AllowCredentials = true
+	cfg.AllowMethods = []string{"GET","POST"}
+	cfg.AllowHeaders = []string{"Authorization","Origin","Accept","X-Requested-With"," Content-Type", "Access-Control-Request-Method", "Access-Control-Request-Headers"}
+	s.Router.Use(cors.New(cfg))
 	s.Db = db
 	// https://chenyitian.gitbooks.io/gin-web-framework/content/docs/26.html
 	s.Router.LoadHTMLGlob("view/*")
@@ -61,7 +66,13 @@ func (s *Server) Listen(port string) {
 }
 
 func (s *Server) AssignHandler(route string, handler Handler) {
-	s.Router.Any(route, func(context *gin.Context) {
+	s.Router.GET(route, func(context *gin.Context) {
+		handler(&Ctx{
+			Server: s,
+			Context: context,
+		})
+	})
+	s.Router.POST(route, func(context *gin.Context) {
 		handler(&Ctx{
 			Server: s,
 			Context: context,
