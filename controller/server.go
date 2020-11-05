@@ -9,6 +9,8 @@ import (
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"log"
+	"math/rand"
+	"time"
 )
 
 const (
@@ -25,6 +27,7 @@ type Server struct {
 }
 
 func InitServer() *Server {
+	rand.Seed(time.Now().UnixNano())
 	// connect ke firebase
 	//ctx := context.Background()
 	//opt := option.WithCredentialsFile(FirebaseConfig)
