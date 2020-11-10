@@ -157,12 +157,8 @@ func CreateAccount(ctx *controller.Ctx) {
 	err := ctx.ShouldBindJSON(&a)
 	res := map[string]interface{}{}
 	if err == nil {
-		pass, err2 := utils.HashGenerator(a.Password) 
-		if err2 != nil {
-			err = err2
-		} else {
-			a.Password = pass
-		}
+		pass := utils.HashGenerator(a.Password) 
+		a.Password = pass
 		err = a.InsertNewAccount(ctx.Db)
 		if err == nil {
 			res[`account`] = a

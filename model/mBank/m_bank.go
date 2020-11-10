@@ -7,6 +7,7 @@ import (
 	"github.com/dgrijalva/jwt-go"
 	"gorm.io/gorm"
 	"log"
+	"strings"
 	"time"
 )
 
@@ -20,7 +21,7 @@ type Account struct {
 	ID            int    `gorm:"primary_key", json:"-"`
 	IdAccount     string `json:"id_account,omitempty"`
 	Name          string `json:"name"`
-	Email         string `json:"email"`
+	Email         string `gorm:"email,unique" json:"email"`
 	Password      string `json:"password,omitempty"`
 	AccountNumber int    `json:"account_number,omitempty"` // TODO: set jadi unique
 	Saldo         int64  `json:"saldo"`
@@ -43,13 +44,15 @@ type Auth struct {
 
 func (auth *Auth) Login(db *gorm.DB) (error, string) {
 	account := Account{}
+	if strings.TrimSpace(auth.Email) == `` {
+		return errors.New(`email may not be empty`), ``
+	}
 	if err := db.Where(&Account{Email: auth.Email}).First(&account).Error; err != nil {
 		if err == gorm.ErrRecordNotFound {
 			return errors.New("account not found"), ""
 		}
 	}
-	err := utils.HashComparator([]byte(account.Password), []byte(auth.Password))
-	if err != nil {
+	if !utils.SamePassword(account.Password,auth.Password) {
 		return errors.New("incorrect Password"), ""
 	} else {
 		sign := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{"email": auth.Email, "account_number": account.AccountNumber})

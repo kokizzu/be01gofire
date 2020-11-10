@@ -1,18 +1,18 @@
 package utils
 
-import "golang.org/x/crypto/bcrypt"
+import (
+	"crypto/sha512"
+	"encoding/base64"
+)
 
-func HashGenerator(str string) (string, error) {
-	hashedString, err := bcrypt.GenerateFromPassword([]byte(str), bcrypt.DefaultCost)
-	if err != nil {
-		return "", err
-	}
-	return string(hashedString), nil
+const Salt = `.837*(&(o8g8`
+
+func HashGenerator(str string) string {
+	s := sha512.New()
+	s.Write([]byte(str+Salt))
+	res := s.Sum(nil)
+	return base64.StdEncoding.EncodeToString(res)
 }
-func HashComparator(hashedByte []byte, byte []byte) error {
-	err := bcrypt.CompareHashAndPassword(hashedByte, byte)
-	if err != nil {
-		return err
-	}
-	return nil
+func SamePassword(hashedByte string, pass string) bool {
+	return hashedByte == HashGenerator(pass)
 }

@@ -7,6 +7,7 @@ require (
 	cloud.google.com/go/firestore v1.3.0
 	cloud.google.com/go/storage v1.12.0 // indirect
 	firebase.google.com/go v3.13.0+incompatible
+	github.com/davecgh/go-spew v1.1.1
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/fatih/color v1.10.0 // indirect
 	github.com/gin-contrib/cors v1.3.1
